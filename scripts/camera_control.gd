@@ -1,0 +1,157 @@
+extends Camera
+
+# User settings:
+export var enabled = true setget set_enabled
+# Mouslook settings
+export(int, "Visible", "Hidden", "Caputered") var mouse_mode = 2
+export var mouselook = true
+export var sensitivity = 0.5
+export (float, 0.0, 0.999, 0.001) var smoothness = 0.5
+export(NodePath) var privot setget set_privot
+export var distance = 5.0
+export var rotate_privot = false
+export var collisions = true setget set_collisions
+export var yaw_limit = 0.0
+export var pitch_limit = 0.0
+# Movement settings
+export var movement = true
+export var speed = 1.0
+export var forward_action = "ui_up"
+export var backward_action = "ui_down"
+export var left_action = "ui_left"
+export var right_action = "ui_right"
+export var gui_action = "ui_cancel"
+
+# Intern variables.
+var _direction = Vector3(0.0, 0.0, 0.0)
+var _mouse_position = Vector2(0.0, 0.0)
+var _yaw = 0.0
+var _pitch = 0.0
+var _total_yaw = 0.0
+var _total_pitch = 0.0
+var gui = preload("camera_control_gui.gd")
+
+func _ready():
+	_check_actions([forward_action, backward_action, left_action, right_action, gui_action])
+
+	if privot:
+		privot = get_node(privot)
+	if enabled:
+		set_enabled(true)
+
+	gui = gui.new(self, gui_action)
+	add_child(gui)
+
+func _input(event):
+	if mouselook:
+		if event.type == InputEvent.MOUSE_MOTION:
+			_mouse_position = event.relative_pos
+
+	if movement:
+		if event.is_action_pressed(forward_action):
+			_direction.z = -1
+		elif event.is_action_pressed(backward_action):
+			_direction.z = 1
+		elif not Input.is_action_pressed(forward_action) and not Input.is_action_pressed(backward_action):
+			_direction.z = 0
+
+		if event.is_action_pressed(left_action):
+			_direction.x = -1
+		elif event.is_action_pressed(right_action):
+			_direction.x = 1
+		elif not Input.is_action_pressed(left_action) and not Input.is_action_pressed(right_action):
+			_direction.x = 0
+
+func _process(delta):
+	if privot:
+		_update_distance()
+	if mouselook:
+		_update_mouselook()
+	if movement:
+		_update_movement(delta)
+
+func _fixed_process(delta):
+	# Called when collision are enabled
+	_update_distance()
+	if mouselook:
+		_update_mouselook()
+	var space_state = get_world().get_direct_space_state()
+	var obstacle = space_state.intersect_ray(privot.get_translation(),  get_translation())
+	if not obstacle.empty():
+		set_translation(obstacle.position)
+
+func _update_movement(delta):
+	translate(_direction * speed * delta)
+
+func _update_mouselook():
+	_mouse_position *= sensitivity
+	_yaw = _yaw * smoothness + _mouse_position.x * (1.0 - smoothness)
+	_pitch = _pitch * smoothness + _mouse_position.y * (1.0 - smoothness)
+	_mouse_position = Vector2(0, 0)
+
+	if yaw_limit:
+		_yaw = clamp(_yaw, -yaw_limit - _total_yaw, yaw_limit - _total_yaw)
+	if pitch_limit:
+		_pitch = clamp(_pitch, -pitch_limit - _total_pitch, pitch_limit - _total_pitch)
+
+	_total_yaw += _yaw
+	_total_pitch += _pitch
+
+	if privot:
+		var target = privot.get_translation()
+		var offset = get_translation().distance_to(target)
+
+		set_translation(target)
+		global_rotate(Vector3(0, 1, 0), deg2rad(_yaw))
+		rotate_x(deg2rad(_pitch))
+		translate(Vector3(0.0, 0.0, offset))
+
+		if rotate_privot:
+			privot.global_rotate(Vector3(0, 1, 0), deg2rad(_yaw))
+	else:
+		global_rotate(Vector3(0, 1, 0), deg2rad(_yaw))
+		rotate_x(deg2rad(_pitch))
+
+func _update_distance():
+	var t = privot.get_translation()
+	t.z -= distance
+	set_translation(t)
+
+func _update_process_func():
+	# Use fixed process if collision are enabled
+	if collisions and privot:
+		set_fixed_process(true)
+		set_process(false)
+	else:
+		set_fixed_process(false)
+		set_process(true)
+
+func _check_actions(actions=[]):
+	if OS.is_debug_build():
+		for action in actions:
+			if not InputMap.has_action(action):
+				print('WARNING: No action "' + action + '"')
+
+func set_privot(value):
+	if privot:
+		privot.remove_child(self)
+	
+	privot = value
+	if privot:
+		privot.add_child(self)
+	_update_process_func()
+
+func set_collisions(value):
+	collisions = value
+	_update_process_func()
+
+func set_enabled(value):
+	enabled = value
+	if enabled:
+		Input.set_mouse_mode(mouse_mode)
+		set_process_input(true)
+		_update_process_func()
+	else:
+		set_process(false)
+		set_process_input(false)
+		set_fixed_process(false)
