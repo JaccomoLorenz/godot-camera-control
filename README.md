@@ -1,8 +1,7 @@
-# Simple Wind Shader
+# Camera Control Script
 
 A camera script for the godot engine version 2.1 (3.0 planned) that provides flexible mouselook, movement (flying), ingame control gui.
 Useful for development and quick tests.
-
 
 ## Demo
 
