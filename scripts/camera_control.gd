@@ -133,12 +133,11 @@ func _check_actions(actions=[]):
 				print('WARNING: No action "' + action + '"')
 
 func set_privot(value):
-	if privot:
-		privot.remove_child(self)
-	
 	privot = value
-	if privot:
-		privot.add_child(self)
+	#if privot:
+		#if get_parent():
+		#	get_parent().remove_child(self)
+		#privot.add_child(self)
 	_update_process_func()
 
 func set_collisions(value):
