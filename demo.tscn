@@ -1,210 +1,262 @@
-[gd_scene load_steps=7 format=1]
+[gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://models/plane.scn" type="PackedScene" id=1]
-[ext_resource path="res://models/cube.scn" type="PackedScene" id=2]
-[ext_resource path="res://scripts/camera_control.gd" type="Script" id=3]
+[ext_resource path="res://scripts/camera_control.gd" type="Script" id=1]
 
-[sub_resource type="FixedMaterial" id=1]
+[sub_resource type="SpatialMaterial" id=1]
 
-flags/visible = true
-flags/double_sided = true
-flags/invert_faces = false
-flags/unshaded = false
-flags/on_top = false
-flags/lightmap_on_uv2 = true
-flags/colarray_is_srgb = true
-params/blend_mode = 0
-params/depth_draw = 1
-params/line_width = 7.52316e-37
-fixed_flags/use_alpha = false
-fixed_flags/use_color_array = false
-fixed_flags/use_point_size = false
-fixed_flags/discard_alpha = false
-fixed_flags/use_xy_normalmap = false
-params/diffuse = Color( 1, 0, 0, 1 )
-params/specular = Color( 0, 0, 0, 1 )
-params/emission = Color( 0, 0, 0, 1 )
-params/specular_exp = 40
-params/detail_mix = 1.0
-params/normal_depth = 1
-params/shader = 0
-params/shader_param = 0.5
-params/glow = 0
-params/point_size = 1.0
-uv_xform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-textures/diffuse_tc = 0
-textures/detail_tc = 0
-textures/specular_tc = 0
-textures/emission_tc = 0
-textures/specular_exp_tc = 0
-textures/glow_tc = 0
-textures/normal_tc = 0
-textures/shade_param_tc = 0
+render_priority = 0
+flags_transparent = false
+flags_unshaded = false
+flags_vertex_lighting = false
+flags_no_depth_test = false
+flags_use_point_size = false
+flags_world_triplanar = false
+flags_fixed_size = false
+flags_albedo_tex_force_srgb = false
+vertex_color_use_as_albedo = false
+vertex_color_is_srgb = false
+params_diffuse_mode = 0
+params_specular_mode = 0
+params_blend_mode = 0
+params_cull_mode = 0
+params_depth_draw_mode = 0
+params_line_width = 1.0
+params_point_size = 1.0
+params_billboard_mode = 0
+params_grow = false
+params_use_alpha_scissor = false
+albedo_color = Color( 1, 1, 1, 1 )
+metallic = 0.0
+metallic_specular = 0.5
+metallic_texture_channel = 0
+roughness = 0.0
+roughness_texture_channel = 0
+emission_enabled = false
+normal_enabled = false
+rim_enabled = false
+clearcoat_enabled = false
+anisotropy_enabled = false
+ao_enabled = false
+depth_enabled = false
+subsurf_scatter_enabled = false
+transmission_enabled = false
+refraction_enabled = false
+detail_enabled = false
+uv1_scale = Vector3( 1, 1, 1 )
+uv1_offset = Vector3( 0, 0, 0 )
+uv1_triplanar = false
+uv1_triplanar_sharpness = 1.0
+uv2_scale = Vector3( 1, 1, 1 )
+uv2_offset = Vector3( 0, 0, 0 )
+uv2_triplanar = false
+uv2_triplanar_sharpness = 1.0
+proximity_fade_enable = false
+distance_fade_enable = false
 
-[sub_resource type="Environment" id=2]
+[sub_resource type="PlaneMesh" id=2]
 
-ambient_light/enabled = true
-ambient_light/color = Color( 1, 1, 1, 1 )
-ambient_light/energy = 0.3
-fxaa/enabled = false
-background/mode = 1
-background/color = Color( 0, 0, 0, 1 )
-background/energy = 1.0
-background/scale = 1.0
-background/glow = 0.0
-background/canvas_max_layer = null
-glow/enabled = false
-glow/blur_passes = 1
-glow/blur_scale = 1
-glow/blur_strength = 1
-glow/blur_blend_mode = null
-glow/bloom = 0.0
-glow/bloom_treshold = 0.5
-dof_blur/enabled = false
-dof_blur/blur_passes = 1
-dof_blur/begin = 100.0
-dof_blur/range = 10.0
-hdr/enabled = false
-hdr/tonemapper = 0
-hdr/exposure = 0.4
-hdr/white = 1.0
-hdr/glow_treshold = 0.95
-hdr/glow_scale = 0.2
-hdr/min_luminance = 0.4
-hdr/max_luminance = 8.0
-hdr/exposure_adj_speed = 0.5
-fog/enabled = false
-fog/begin = 100.0
-fog/begin_color = Color( 0, 0, 0, 1 )
-fog/end_color = Color( 0, 0, 0, 1 )
-fog/attenuation = 1.0
-fog/bg = true
-bcs/enabled = false
-bcs/brightness = 1.0
-bcs/contrast = 1.0
-bcs/saturation = 1.0
-srgb/enabled = false
+size = Vector2( 10, 10 )
+subdivide_width = 0
+subdivide_depth = 0
 
-[sub_resource type="ConcavePolygonShape" id=3]
+[sub_resource type="SpatialMaterial" id=3]
 
-data = Vector3Array( 1, -0.9999, -0.9999, -0.9999, -0.9999, -0.9999, -0.9999, -0.9999, 1, -0.9999, 1, -0.9999, 1, 1, -0.9999, 1, 1, 1, 1, 1, -0.9999, 1, -0.9999, -0.9999, 1, -0.9999, 1, 1, 1, 1, 1, -0.9999, 1, -0.9999, -0.9999, 1, -0.9999, -0.9999, 1, -0.9999, -0.9999, -0.9999, -0.9999, 1, -0.9999, 1, -0.9999, -0.9999, 1, 1, -0.9999, -0.9999, 1, -0.9999, 1, -0.9999, -0.9999, -0.9999, -0.9999, 1, 1, -0.9999, 1, -0.9999, 1, -0.9999, 1, 1, 1, -0.9999, 1, 1, 1, 1, -0.9999, 1, -0.9999, 1, 1, 1, 1, 1, 1, 1, -0.9999, -0.9999, 1, -0.9999, 1, 1, -0.9999, -0.9999, 1, -0.9999, 1, -0.9999, -0.9999, 1, 1, 1, -0.9999, -0.9999, -0.9999, 1, -0.9999, -0.9999, -0.9999, -0.9999 )
+render_priority = 0
+flags_transparent = false
+flags_unshaded = false
+flags_vertex_lighting = false
+flags_no_depth_test = false
+flags_use_point_size = false
+flags_world_triplanar = false
+flags_fixed_size = false
+flags_albedo_tex_force_srgb = false
+vertex_color_use_as_albedo = false
+vertex_color_is_srgb = false
+params_diffuse_mode = 0
+params_specular_mode = 0
+params_blend_mode = 0
+params_cull_mode = 0
+params_depth_draw_mode = 0
+params_line_width = 1.0
+params_point_size = 1.0
+params_billboard_mode = 0
+params_grow = false
+params_use_alpha_scissor = false
+albedo_color = Color( 1, 1, 1, 1 )
+metallic = 0.0
+metallic_specular = 0.5
+metallic_texture_channel = 0
+roughness = 0.0
+roughness_texture_channel = 0
+emission_enabled = false
+normal_enabled = false
+rim_enabled = false
+clearcoat_enabled = false
+anisotropy_enabled = false
+ao_enabled = false
+depth_enabled = false
+subsurf_scatter_enabled = false
+transmission_enabled = false
+refraction_enabled = false
+detail_enabled = false
+uv1_scale = Vector3( 1, 1, 1 )
+uv1_offset = Vector3( 0, 0, 0 )
+uv1_triplanar = false
+uv1_triplanar_sharpness = 1.0
+uv2_scale = Vector3( 1, 1, 1 )
+uv2_offset = Vector3( 0, 0, 0 )
+uv2_triplanar = false
+uv2_triplanar_sharpness = 1.0
+proximity_fade_enable = false
+distance_fade_enable = false
 
-[node name="Node" type="Node"]
+[sub_resource type="CubeMesh" id=4]
 
-[node name="TestCube" type="TestCube" parent="." groups=[
-"privots",
-]]
+size = Vector3( 2, 2, 2 )
+subdivide_width = 0
+subdivide_height = 0
+subdivide_depth = 0
 
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.5, 0 )
-layers = 1
-geometry/visible = true
-geometry/material_override = SubResource( 1 )
-geometry/cast_shadow = 1
-geometry/receive_shadows = true
-geometry/range_begin = 0.0
-geometry/range_end = 0.0
-geometry/extra_cull_margin = 0.0
-geometry/billboard = false
-geometry/billboard_y = false
-geometry/depth_scale = false
-geometry/visible_in_all_rooms = false
-geometry/use_baked_light = false
-geometry/baked_light_tex_id = 0
+[sub_resource type="ConcavePolygonShape" id=5]
 
-[node name="DirectionalLight" type="DirectionalLight" parent="."]
+data = PoolVector3Array( -1, 1, 1, 1, 1, 1, -1, -1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1, 1, 1, -1, -1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, 1, 1, 1, 1, -1, 1, -1, 1, 1, 1, -1, 1, -1, -1, 1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, 1, -1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, -1, -1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, -1, -1 )
 
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 0.395531, 0.918452, 0, -0.918452, 0.395531, 0, 7.30443, 0 )
-layers = 1
-params/enabled = true
-params/editor_only = false
-params/bake_mode = 0
-params/energy = 1.0
-colors/diffuse = Color( 1, 1, 1, 1 )
-colors/specular = Color( 1, 1, 1, 1 )
-shadow/shadow = false
-shadow/darkening = 0.0
-shadow/z_offset = 0.05
-shadow/z_slope_scale = 0.0
-shadow/esm_multiplier = 60.0
-shadow/blur_passes = 1.0
-projector = null
-operator = 0
-shadow/mode = 0
-shadow/max_distance = 0.0
-shadow/split_weight = 0.5
-shadow/zoffset_scale = 2.0
+[sub_resource type="CubeMesh" id=6]
 
-[node name="plane" parent="." instance=ExtResource( 1 )]
+size = Vector3( 1, 2, 1 )
+subdivide_width = 0
+subdivide_height = 0
+subdivide_depth = 0
 
-transform/local = Transform( 3, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 0 )
+[node name="Node" type="Node" index="0"]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="Camera" type="Camera" parent="." index="0"]
 
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-environment = SubResource( 2 )
-
-[node name="cube" parent="." instance=ExtResource( 2 )]
-
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.97487, 1.04504, 2.37753 )
-
-[node name="StaticBody" type="StaticBody" parent="cube/Cube"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-input/ray_pickable = true
-input/capture_on_drag = false
-shape_count = 1
-shapes/0/shape = SubResource( 3 )
-shapes/0/transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-shapes/0/trigger = false
-collision/layers = 1
-collision/mask = 1
-friction = 1.0
-bounce = 0.0
-constant_linear_velocity = Vector3( 0, 0, 0 )
-constant_angular_velocity = Vector3( 0, 0, 0 )
-
-[node name="CollisionShape" type="CollisionShape" parent="cube/Cube/StaticBody"]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-shape = SubResource( 3 )
-trigger = false
-_update_shape_index = 0
-
-[node name="Camera" type="Camera" parent="."]
-
-_import_transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-transform/local = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5 )
-projection = 0
-fov = 60.0
-near = 0.1
-far = 100.0
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 5 )
 keep_aspect = 1
-current = false
-visible_layers = 1048575
+cull_mask = 1048575
 environment = null
 h_offset = 0.0
 v_offset = 0.0
-script/script = ExtResource( 3 )
+doppler_tracking = 0
+projection = 0
+current = false
+fov = 70.0
+size = 1.0
+near = 0.05
+far = 100.0
+script = ExtResource( 1 )
 enabled = true
-mouse_mode = 0
+mouse_mode = 2
 mouselook = true
 sensitivity = 0.5
-smoothness = 0.0
+smoothness = 0.5
 privot = null
 distance = 5.0
 rotate_privot = false
 collisions = true
-yaw_limit = 0.0
-pitch_limit = 0.0
+yaw_limit = 360
+pitch_limit = 360
 movement = true
 speed = 1.0
 forward_action = "ui_up"
 backward_action = "ui_down"
 left_action = "ui_left"
 right_action = "ui_right"
+use_gui = true
 gui_action = "ui_cancel"
 
+[node name="DirectionalLight" type="DirectionalLight" parent="." index="1"]
 
-[editable path="cube"]
+transform = Transform( 1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 8, 0 )
+layers = 1
+light_color = Color( 1, 1, 1, 1 )
+light_energy = 1.0
+light_indirect_energy = 1.0
+light_negative = false
+light_specular = 0.5
+light_bake_mode = 1
+light_cull_mask = -1
+shadow_enabled = false
+shadow_color = Color( 0, 0, 0, 1 )
+shadow_bias = 0.1
+shadow_contact = 0.0
+shadow_reverse_cull_face = false
+editor_only = false
+directional_shadow_mode = 2
+directional_shadow_split_1 = 0.1
+directional_shadow_split_2 = 0.2
+directional_shadow_split_3 = 0.5
+directional_shadow_blend_splits = false
+directional_shadow_normal_bias = 0.8
+directional_shadow_bias_split_scale = 0.25
+directional_shadow_depth_range = 0
+directional_shadow_max_distance = 200.0
+
+[node name="Ground" type="MeshInstance" parent="." index="2"]
+
+layers = 1
+material_override = SubResource( 1 )
+cast_shadow = 1
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+mesh = SubResource( 2 )
+skeleton = NodePath("..")
+material/0 = null
+_sections_unfolded = [ "Geometry" ]
+
+[node name="Cube" type="MeshInstance" parent="." index="3"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, -4 )
+layers = 1
+material_override = SubResource( 3 )
+cast_shadow = 1
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+mesh = SubResource( 4 )
+skeleton = NodePath("..")
+material/0 = null
+_sections_unfolded = [ "Geometry" ]
+
+[node name="StaticBody" type="StaticBody" parent="Cube" index="0"]
+
+input_ray_pickable = true
+input_capture_on_drag = false
+collision_layer = 1
+collision_mask = 1
+friction = 1.0
+bounce = 0.0
+constant_linear_velocity = Vector3( 0, 0, 0 )
+constant_angular_velocity = Vector3( 0, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Cube/StaticBody" index="0"]
+
+shape = SubResource( 5 )
+disabled = false
+
+[node name="Cube2" type="MeshInstance" parent="." index="4"]
+
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+layers = 1
+material_override = SubResource( 3 )
+cast_shadow = 1
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+mesh = SubResource( 6 )
+skeleton = NodePath("..")
+material/0 = null
+_sections_unfolded = [ "Geometry" ]
+
+

@@ -1,18 +1,21 @@
 extends Camera
 
 # User settings:
+# General settings
 export var enabled = true setget set_enabled
+export(int, "Visible", "Hidden", "Caputered, Confined") var mouse_mode = 2
+
 # Mouslook settings
-export(int, "Visible", "Hidden", "Caputered") var mouse_mode = 2
 export var mouselook = true
 export var sensitivity = 0.5
-export (float, 0.0, 0.999, 0.001) var smoothness = 0.5
+export (float, 0.0, 0.999, 0.001) var smoothness = 0.5 setget set_smoothness
 export(NodePath) var privot setget set_privot
-export var distance = 5.0
+export var distance = 5.0 setget set_distance
 export var rotate_privot = false
 export var collisions = true setget set_collisions
-export var yaw_limit = 0.0
-export var pitch_limit = 0.0
+export var yaw_limit = 360
+export var pitch_limit = 360
+
 # Movement settings
 export var movement = true
 export var speed = 1.0
@@ -20,6 +23,9 @@ export var forward_action = "ui_up"
 export var backward_action = "ui_down"
 export var left_action = "ui_left"
 export var right_action = "ui_right"
+
+# Gui settings
+export var use_gui = true
 export var gui_action = "ui_cancel"
 
 # Intern variables.
@@ -29,23 +35,27 @@ var _yaw = 0.0
 var _pitch = 0.0
 var _total_yaw = 0.0
 var _total_pitch = 0.0
-var gui = preload("camera_control_gui.gd")
+var _gui
 
 func _ready():
 	_check_actions([forward_action, backward_action, left_action, right_action, gui_action])
 
 	if privot:
 		privot = get_node(privot)
-	if enabled:
-		set_enabled(true)
-
-	gui = gui.new(self, gui_action)
-	add_child(gui)
+	else:
+		privot = null
+		
+	set_enabled(enabled)
+		
+	if use_gui:
+		_gui = preload("camera_control_gui.gd")
+		_gui = _gui.new(self, gui_action)
+		add_child(_gui)
 
 func _input(event):
 	if mouselook:
-		if event.type == InputEvent.MOUSE_MOTION:
-			_mouse_position = event.relative_pos
+		if event is InputEventMouseMotion:
+			_mouse_position = event.relative
 
 	if movement:
 		if event.is_action_pressed(forward_action):
@@ -70,11 +80,12 @@ func _process(delta):
 	if movement:
 		_update_movement(delta)
 
-func _fixed_process(delta):
+func _physics_process(delta):
 	# Called when collision are enabled
 	_update_distance()
 	if mouselook:
 		_update_mouselook()
+	
 	var space_state = get_world().get_direct_space_state()
 	var obstacle = space_state.intersect_ray(privot.get_translation(),  get_translation())
 	if not obstacle.empty():
@@ -89,9 +100,9 @@ func _update_mouselook():
 	_pitch = _pitch * smoothness + _mouse_position.y * (1.0 - smoothness)
 	_mouse_position = Vector2(0, 0)
 
-	if yaw_limit:
+	if yaw_limit < 360:
 		_yaw = clamp(_yaw, -yaw_limit - _total_yaw, yaw_limit - _total_yaw)
-	if pitch_limit:
+	if pitch_limit < 360:
 		_pitch = clamp(_pitch, -pitch_limit - _total_pitch, pitch_limit - _total_pitch)
 
 	_total_yaw += _yaw
@@ -102,15 +113,15 @@ func _update_mouselook():
 		var offset = get_translation().distance_to(target)
 
 		set_translation(target)
-		global_rotate(Vector3(0, 1, 0), deg2rad(_yaw))
-		rotate_x(deg2rad(_pitch))
+		rotate_y(deg2rad(-_yaw))
+		rotate_object_local(Vector3(1,0,0), deg2rad(-_pitch))
 		translate(Vector3(0.0, 0.0, offset))
 
 		if rotate_privot:
-			privot.global_rotate(Vector3(0, 1, 0), deg2rad(_yaw))
+			privot.rotate_y(deg2rad(-_yaw))
 	else:
-		global_rotate(Vector3(0, 1, 0), deg2rad(_yaw))
-		rotate_x(deg2rad(_pitch))
+		rotate_y(deg2rad(-_yaw))
+		rotate_object_local(Vector3(1,0,0), deg2rad(-_pitch))
 
 func _update_distance():
 	var t = privot.get_translation()
@@ -118,12 +129,12 @@ func _update_distance():
 	set_translation(t)
 
 func _update_process_func():
-	# Use fixed process if collision are enabled
+	# Use physics process if collision are enabled
 	if collisions and privot:
-		set_fixed_process(true)
+		set_physics_process(true)
 		set_process(false)
 	else:
-		set_fixed_process(false)
+		set_physics_process(false)
 		set_process(true)
 
 func _check_actions(actions=[]):
@@ -134,10 +145,11 @@ func _check_actions(actions=[]):
 
 func set_privot(value):
 	privot = value
-	#if privot:
-		#if get_parent():
-		#	get_parent().remove_child(self)
-		#privot.add_child(self)
+	# TODO: fix parenting.
+#	if privot:
+#		if get_parent():
+#			get_parent().remove_child(self)
+#		privot.add_child(self)
 	_update_process_func()
 
 func set_collisions(value):
@@ -153,4 +165,10 @@ func set_enabled(value):
 	else:
 		set_process(false)
 		set_process_input(false)
-		set_fixed_process(false)
+		set_physics_process(false)
+
+func set_smoothness(value):
+	smoothness = clamp(value, 0.001, 0.999)
+	
+func set_distance(value):
+	distance = max(0, value)
