@@ -5,7 +5,7 @@ Useful for development and quick tests.
 
 Demo video: https://www.youtube.com/watch?v=OSJRc-IiOio&t=9s
 
-![Image](assets/maujoe.camera_control/screenshots/editor_settings.png)![Image](assets/maujoe.camera_control/screenshots/ingame_gui.png)
+![Image](screenshots/editor_settings.png)![Image](screenshots/ingame_gui.png)
 
 ## How to use
 

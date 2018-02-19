@@ -98,4 +98,5 @@ adjustment_enabled = false
 adjustment_brightness = 1.0
 adjustment_contrast = 1.0
 adjustment_saturation = 1.0
+_sections_unfolded = [ "Ambient Light", "Background" ]
 

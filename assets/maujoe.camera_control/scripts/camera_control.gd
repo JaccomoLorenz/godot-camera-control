@@ -1,3 +1,6 @@
+# Licensed under the MIT License.
+# Copyright (c) 2018 Jaccomo Lorenz (Maujoe)
+
 extends Camera
 
 # User settings:
@@ -44,9 +47,9 @@ func _ready():
 		privot = get_node(privot)
 	else:
 		privot = null
-		
+
 	set_enabled(enabled)
-		
+
 	if use_gui:
 		_gui = preload("camera_control_gui.gd")
 		_gui = _gui.new(self, gui_action)
@@ -85,7 +88,7 @@ func _physics_process(delta):
 	_update_distance()
 	if mouselook:
 		_update_mouselook()
-	
+
 	var space_state = get_world().get_direct_space_state()
 	var obstacle = space_state.intersect_ray(privot.get_translation(),  get_translation())
 	if not obstacle.empty():
@@ -169,6 +172,6 @@ func set_enabled(value):
 
 func set_smoothness(value):
 	smoothness = clamp(value, 0.001, 0.999)
-	
+
 func set_distance(value):
 	distance = max(0, value)

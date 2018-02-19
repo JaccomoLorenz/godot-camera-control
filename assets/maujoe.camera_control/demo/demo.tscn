@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://scripts/camera_control.gd" type="Script" id=1]
+[ext_resource path="res://assets/maujoe.camera_control/scripts/camera_control.gd" type="Script" id=1]
 
 [sub_resource type="SpatialMaterial" id=1]
 
@@ -152,9 +152,9 @@ mouselook = true
 sensitivity = 0.5
 smoothness = 0.5
 privot = null
-distance = 5.0
+distance = 6.0
 rotate_privot = false
-collisions = true
+collisions = false
 yaw_limit = 360
 pitch_limit = 360
 movement = true

@@ -11,9 +11,14 @@ config_version=3
 [application]
 
 config/name="Camera Control"
-run/main_scene="res://demo.tscn"
-config/icon="res://icon.png"
+run/main_scene="res://assets/maujoe.camera_control/demo/demo.tscn"
+config/icon="res://assets/maujoe.camera_control/icon.png"
+
+[display]
+
+window/size/width=1920
+window/size/height=1080
 
 [rendering]
 
-environment/default_environment="res://default_env.tres"
+environment/default_environment="res://assets/maujoe.camera_control/demo/default_env.tres"
