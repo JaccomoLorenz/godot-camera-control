@@ -3,12 +3,24 @@
 
 extends Control
 
+# settings.
+const GUI_POS = Vector2(10, 10)
 const GUI_SIZE = Vector2(200, 0)
+const DRAGGABLE = true
+
+const CUSTOM_BACKGROUND = false
+const BACKGROUND_COLOR = Color(0.15, 0.17, 0.23, 0.75) 
+
 const MAX_SPEED = 50
+
 var camera
 var shortcut
 var node_list
 var privot
+var panel
+
+var mouse_over = false
+var mouse_pressed = false
 
 func _init(camera, shortcut):
 	self.camera = camera
@@ -17,12 +29,20 @@ func _init(camera, shortcut):
 func _ready():
 	if camera.enabled:
 		set_process_input(true)
+		
 		# Create Gui
-
+		panel = PanelContainer.new()
+		panel.set_begin(GUI_POS)
+		panel.set_custom_minimum_size(GUI_SIZE)
+		
+		if CUSTOM_BACKGROUND:
+			var style = StyleBoxFlat.new()
+			style.set_bg_color(BACKGROUND_COLOR)
+			style.set_expand_margin_all(5)
+			panel.add_stylebox_override("panel", style)
+		
 		var container = VBoxContainer.new()
-		container.set_begin(Vector2(10, 10))
-		container.set_custom_minimum_size(GUI_SIZE)
-
+		
 		var lbl_mouse = Label.new()
 		lbl_mouse.set_text("Mousemode")
 
@@ -118,7 +138,8 @@ func _ready():
 		speed.set_value(camera.speed)
 		speed.connect("value_changed",self,"_on_hsb_speed_value_changed")
 
-		add_child(container)
+		add_child(panel)
+		panel.add_child(container)
 		container.add_child(lbl_mouse)
 		container.add_child(mouse)
 		container.add_child(mouselook)
@@ -140,6 +161,13 @@ func _ready():
 		container.add_child(movement)
 		container.add_child(lbl_speed)
 		container.add_child(speed)
+		
+		if DRAGGABLE:
+			panel.connect("mouse_entered", self, "_panel_entered")
+			panel.connect("mouse_exited", self, "_panel_exited")
+			container.connect("mouse_entered", self, "_panel_entered")
+			container.connect("mouse_exited", self, "_panel_exited")
+		
 		self.hide()
 	else:
 		set_process_input(false)
@@ -153,6 +181,13 @@ func _input(event):
 		else:
 			camera.enabled = true
 			self.hide()
+			
+	if DRAGGABLE:
+		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+			mouse_pressed = event.pressed
+			
+		elif event is InputEventMouseMotion and mouse_over and mouse_pressed:
+			panel.set_begin(panel.get_begin() + event.relative)
 
 func _update_privots(privot):
 	privot.clear()
@@ -180,6 +215,12 @@ func _get_spatials_recusiv(node, exceptions=[]):
 				for subchild in _get_spatials_recusiv(child, exceptions):
 					list.append(subchild)
 	return list
+
+func _panel_entered():
+	mouse_over = true
+
+func _panel_exited():
+	mouse_over = false
 
 func _on_opt_mouse_item_selected(id):
 	camera.mouse_mode = id
