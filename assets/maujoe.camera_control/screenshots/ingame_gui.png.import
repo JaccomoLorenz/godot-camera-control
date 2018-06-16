@@ -7,10 +7,7 @@ path="res://.import/ingame_gui.png-3187694b99488d34f95f567f152c6937.stex"
 [deps]
 
 source_file="res://assets/maujoe.camera_control/screenshots/ingame_gui.png"
-source_md5="6a1978fd7e86f6725940a829a4637247"
-
 dest_files=[ "res://.import/ingame_gui.png-3187694b99488d34f95f567f152c6937.stex" ]
-dest_md5="65c14a9a1a323ccc856edf686f9cda8b"
 
 [params]
 

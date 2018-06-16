@@ -7,10 +7,7 @@ path="res://.import/icon.png-5d9aeb34e4fe76b4f9b5e813feff67e9.stex"
 [deps]
 
 source_file="res://assets/maujoe.camera_control/icon.png"
-source_md5="32a37f6841cd7e78ba6784bca0449642"
-
 dest_files=[ "res://.import/icon.png-5d9aeb34e4fe76b4f9b5e813feff67e9.stex" ]
-dest_md5="4012d72363ceaa5c64c858f8626a7b20"
 
 [params]
 

@@ -21,23 +21,30 @@ export var pitch_limit = 360
 
 # Movement settings
 export var movement = true
-export var speed = 1.0
+export (float, 0.0, 1.0) var acceleration = 1.0
+export (float, 0.0, 1.0, 0.01) var deceleration = 0.1
+export var max_speed = Vector3(1.0, 1.0, 1.0)
+export var local = true
 export var forward_action = "ui_up"
 export var backward_action = "ui_down"
 export var left_action = "ui_left"
 export var right_action = "ui_right"
+export var up_action = "ui_page_up"
+export var down_action = "ui_page_down"
 
 # Gui settings
 export var use_gui = true
 export var gui_action = "ui_cancel"
 
 # Intern variables.
-var _direction = Vector3(0.0, 0.0, 0.0)
 var _mouse_position = Vector2(0.0, 0.0)
 var _yaw = 0.0
 var _pitch = 0.0
 var _total_yaw = 0.0
 var _total_pitch = 0.0
+
+var _direction = Vector3(0.0, 0.0, 0.0)
+var _speed = Vector3(0.0, 0.0, 0.0)
 var _gui
 
 func _ready():
@@ -74,6 +81,13 @@ func _input(event):
 			_direction.x = 1
 		elif not Input.is_action_pressed(left_action) and not Input.is_action_pressed(right_action):
 			_direction.x = 0
+			
+		if event.is_action_pressed(up_action):
+			_direction.y = 1
+		if event.is_action_pressed(down_action):
+			_direction.y = -1
+		elif not Input.is_action_pressed(up_action) and not Input.is_action_pressed(down_action):
+			_direction.y = 0
 
 func _process(delta):
 	if privot:
@@ -95,7 +109,23 @@ func _physics_process(delta):
 		set_translation(obstacle.position)
 
 func _update_movement(delta):
-	translate(_direction * speed * delta)
+	var offset = max_speed * acceleration * _direction
+	
+	if _direction.x == 0:
+		offset.x += (_speed.x * (1.0 - deceleration))
+	if _direction.y == 0:
+		offset.y += (_speed.y * (1.0 - deceleration))
+	if _direction.z == 0:
+		offset.z += (_speed.z * (1.0 - deceleration))
+	
+	_speed.x = clamp(offset.x, -max_speed.x, max_speed.x)
+	_speed.y = clamp(offset.y, -max_speed.y, max_speed.y)
+	_speed.z = clamp(offset.z, -max_speed.z, max_speed.z)
+
+	if local:
+		translate(_speed * delta)
+	else:
+		global_translate(_speed * delta)
 
 func _update_mouselook():
 	_mouse_position *= sensitivity

@@ -7,10 +7,7 @@ path="res://.import/editor_settings.png-af80b133a522dbb700e51845cc0c35b8.stex"
 [deps]
 
 source_file="res://assets/maujoe.camera_control/screenshots/editor_settings.png"
-source_md5="a37f44d6ec7ad5cef6f5de2aa8ada0df"
-
 dest_files=[ "res://.import/editor_settings.png-af80b133a522dbb700e51845cc0c35b8.stex" ]
-dest_md5="ef17597a3afc40076fc2ffb9acbd01eb"
 
 [params]
 

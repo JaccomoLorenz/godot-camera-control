@@ -131,12 +131,28 @@ func _ready():
 		movement.connect("toggled",self,"_on_btn_movement_toggled")
 
 		var lbl_speed = Label.new()
-		lbl_speed.set_text("Speed")
+		lbl_speed.set_text("Max Speed")
 
 		var speed = HScrollBar.new()
 		speed.set_max(MAX_SPEED)
-		speed.set_value(camera.speed)
+		speed.set_value(camera.max_speed.x)
 		speed.connect("value_changed",self,"_on_hsb_speed_value_changed")
+		
+		var lbl_acceleration = Label.new()
+		lbl_acceleration.set_text("Acceleration")
+		
+		var acceleration = HScrollBar.new()
+		acceleration.set_max(1.0)
+		acceleration.set_value(camera.acceleration)
+		acceleration.connect("value_changed", self, "_in_hsb_acceleration_value_changed")
+		
+		var lbl_deceleration = Label.new()
+		lbl_deceleration.set_text("Deceleration")
+		
+		var deceleration = HScrollBar.new()
+		deceleration.set_max(1.0)
+		deceleration.set_value(camera.deceleration)
+		deceleration.connect("value_changed", self, "_in_hsb_deceleration_value_changed")
 
 		add_child(panel)
 		panel.add_child(container)
@@ -161,6 +177,10 @@ func _ready():
 		container.add_child(movement)
 		container.add_child(lbl_speed)
 		container.add_child(speed)
+		container.add_child(lbl_acceleration)
+		container.add_child(acceleration)
+		container.add_child(lbl_deceleration)
+		container.add_child(deceleration)
 		
 		if DRAGGABLE:
 			panel.connect("mouse_entered", self, "_panel_entered")
@@ -263,4 +283,12 @@ func _on_btn_movement_toggled(pressed):
 	camera.movement = pressed
 
 func _on_hsb_speed_value_changed(value):
-	camera.speed = value
+	camera.max_speed.x = value
+	camera.max_speed.y = value
+	camera.max_speed.z = value
+	
+func _in_hsb_acceleration_value_changed(value):
+	camera.acceleration = value
+	
+func _in_hsb_deceleration_value_changed(value):
+	camera.deceleration = value
