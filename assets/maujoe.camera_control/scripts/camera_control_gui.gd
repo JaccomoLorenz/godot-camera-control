@@ -3,7 +3,8 @@
 
 extends Control
 
-# settings.
+# Constant Gui Settings
+#*******************************************************************************
 const GUI_POS = Vector2(10, 10)
 const GUI_SIZE = Vector2(200, 0)
 const DRAGGABLE = true
@@ -12,6 +13,7 @@ const CUSTOM_BACKGROUND = false
 const BACKGROUND_COLOR = Color(0.15, 0.17, 0.23, 0.75) 
 
 const MAX_SPEED = 50
+#*******************************************************************************
 
 var camera
 var shortcut
