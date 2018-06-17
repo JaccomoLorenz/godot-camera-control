@@ -48,7 +48,7 @@ var _speed = Vector3(0.0, 0.0, 0.0)
 var _gui
 
 func _ready():
-	_check_actions([forward_action, backward_action, left_action, right_action, gui_action])
+	_check_actions([forward_action, backward_action, left_action, right_action, gui_action, up_action, down_action])
 
 	if privot:
 		privot = get_node(privot)
