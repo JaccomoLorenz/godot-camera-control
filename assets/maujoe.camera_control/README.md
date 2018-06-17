@@ -13,11 +13,11 @@ Demo video: https://www.youtube.com/watch?v=OSJRc-IiOio&t=9s
 
 <details>
   <summary>Editor Settings</summary>
-   ![Image](screenshots/editor_settings.png)
+   <img src="screenshots/editor_settings.png" >
 </details>
 <details>
   <summary>Ingame Gui</summary>
-   ![Image](screenshots/ingame_gui.png)
+	<img src="screenshots/ingame_gui.png" >
 </details>
 
 ## How to use
