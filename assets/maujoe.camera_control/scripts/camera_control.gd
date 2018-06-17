@@ -10,14 +10,14 @@ export(int, "Visible", "Hidden", "Caputered, Confined") var mouse_mode = 2
 
 # Mouslook settings
 export var mouselook = true
-export var sensitivity = 0.5
+export (float, 0.0, 1.0) var sensitivity = 0.5
 export (float, 0.0, 0.999, 0.001) var smoothness = 0.5 setget set_smoothness
 export(NodePath) var privot setget set_privot
 export var distance = 5.0 setget set_distance
 export var rotate_privot = false
 export var collisions = true setget set_collisions
-export var yaw_limit = 360
-export var pitch_limit = 360
+export (int, 0, 360) var yaw_limit = 360
+export (int, 0, 360) var pitch_limit = 360
 
 # Movement settings
 export var movement = true
