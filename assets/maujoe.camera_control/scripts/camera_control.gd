@@ -111,9 +111,9 @@ func _physics_process(delta):
 func _update_movement(delta):
 	var offset = max_speed * acceleration * _direction
 	
-	_speed.x += clamp(offset.x, -max_speed.x, max_speed.x)
-	_speed.y += clamp(offset.y, -max_speed.y, max_speed.y)
-	_speed.z += clamp(offset.z, -max_speed.z, max_speed.z)
+	_speed.x = clamp(_speed.x + offset.x, -max_speed.x, max_speed.x)
+	_speed.y = clamp(_speed.y + offset.y, -max_speed.y, max_speed.y)
+	_speed.z = clamp(_speed.z + offset.z, -max_speed.z, max_speed.z)
 	
 	# Apply deceleration if no input
 	if _direction.x == 0:
