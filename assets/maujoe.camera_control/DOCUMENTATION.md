@@ -25,8 +25,8 @@
 
 - bool movement - Enable/disable camera movement (flying). Default is true.
 - bool local - Switch between movement on local or global axes. Default is true.
-- float acceleration - Set the movement acceleraion. A Value between 0 and 1. Default value is 1.0.
-- float deceleration - Set the movement deceleraion. A Value between 0 and 1. Default value is 0.1.
+- float acceleration - Set the movement speed up factor. A Value between 0 and 1. Default value is 1.0.
+- float deceleration - Set the movement slow down factor. A Value between 0 and 1. Default value is 0.1.
 - Vector3 max_speed - Set maximum movement speed for each axes separately. Default value is (1.0, 1.0, 1.0).
 
 
