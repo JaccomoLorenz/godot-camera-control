@@ -22,7 +22,7 @@ export (int, 0, 360) var pitch_limit = 360
 # Movement settings
 export var movement = true
 export (float, 0.0, 1.0) var acceleration = 1.0
-export (float, 0.0, 1.0, 0.01) var deceleration = 0.1
+export (float, 0.0, 0.0, 1.0) var deceleration = 0.1
 export var max_speed = Vector3(1.0, 1.0, 1.0)
 export var local = true
 export var forward_action = "ui_up"
@@ -111,16 +111,17 @@ func _physics_process(delta):
 func _update_movement(delta):
 	var offset = max_speed * acceleration * _direction
 	
-	if _direction.x == 0:
-		offset.x += (_speed.x * (1.0 - deceleration))
-	if _direction.y == 0:
-		offset.y += (_speed.y * (1.0 - deceleration))
-	if _direction.z == 0:
-		offset.z += (_speed.z * (1.0 - deceleration))
+	_speed.x += clamp(offset.x, -max_speed.x, max_speed.x)
+	_speed.y += clamp(offset.y, -max_speed.y, max_speed.y)
+	_speed.z += clamp(offset.z, -max_speed.z, max_speed.z)
 	
-	_speed.x = clamp(offset.x, -max_speed.x, max_speed.x)
-	_speed.y = clamp(offset.y, -max_speed.y, max_speed.y)
-	_speed.z = clamp(offset.z, -max_speed.z, max_speed.z)
+	# Apply deceleration if no input
+	if _direction.x == 0:
+		_speed.x *= (1.0 - deceleration)
+	if _direction.y == 0:
+		_speed.y *= (1.0 - deceleration)
+	if _direction.z == 0:
+		_speed.z *= (1.0 - deceleration)
 
 	if local:
 		translate(_speed * delta)
