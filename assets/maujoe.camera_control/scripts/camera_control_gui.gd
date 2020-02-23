@@ -1,5 +1,5 @@
 # Licensed under the MIT License.
-# Copyright (c) 2018 Jaccomo Lorenz (Maujoe)
+# Copyright (c) 2018-2020 Jaccomo Lorenz (Maujoe)
 
 extends Control
 
@@ -56,12 +56,12 @@ func _ready():
 		mouse.select(camera.mouse_mode)
 		mouse.connect("item_selected",self,"_on_opt_mouse_item_selected")
 
-		# Mouselook
-		var mouselook = CheckButton.new()
-		mouselook.set_text("Mouselook")
-		mouselook.set_toggle_mode(true)
-		mouselook.set_pressed(camera.mouselook)
-		mouselook.connect("toggled",self,"_on_btn_mouselook_toggled")
+		# Freelook
+		var freelook = CheckButton.new()
+		freelook.set_text("Freelook")
+		freelook.set_toggle_mode(true)
+		freelook.set_pressed(camera.freelook)
+		freelook.connect("toggled",self,"_on_btn_freelook_toggled")
 
 		var lbl_sensitivity = Label.new()
 		lbl_sensitivity.set_text("Sensitivity")
@@ -160,7 +160,7 @@ func _ready():
 		panel.add_child(container)
 		container.add_child(lbl_mouse)
 		container.add_child(mouse)
-		container.add_child(mouselook)
+		container.add_child(freelook)
 		container.add_child(lbl_sensitivity)
 		container.add_child(sensitivity)
 		container.add_child(lbl_smoothless)
@@ -247,8 +247,8 @@ func _panel_exited():
 func _on_opt_mouse_item_selected(id):
 	camera.mouse_mode = id
 
-func _on_btn_mouselook_toggled(pressed):
-	camera.mouselook = pressed
+func _on_btn_freelook_toggled(pressed):
+	camera.freelook = pressed
 
 func _on_hsb_sensitivity_value_changed(value):
 	camera.sensitivity = value
