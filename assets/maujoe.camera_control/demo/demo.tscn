@@ -32,6 +32,7 @@ rotate_left_action = "ui_rotate_left"
 rotate_right_action = "ui_rotate_right"
 rotate_up_action = "ui_rotate_up"
 rotate_down_action = "ui-rotate_down"
+trigger_action = ""
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 8, 0 )
