@@ -112,17 +112,25 @@ func _input(event):
 			_direction.z = Input.get_action_strength(backward_action) - Input.get_action_strength(forward_action)
 
 func _process(delta):
+	if _triggered:
+		_update_views(delta)
+
+func _update_views(delta):
 	if privot:
 		_update_distance()
-	if freelook and _triggered:
+	if freelook:
 		_update_rotation(delta)
-	if movement and _triggered:
+	if movement:
 		_update_movement(delta)
 
 func _physics_process(delta):
+	if _triggered:
+		_update_views_physics(delta)
+
+func _update_views_physics(delta):
 	# Called when collision are enabled
 	_update_distance()
-	if freelook and _triggered:
+	if freelook:
 		_update_rotation(delta)
 
 	var space_state = get_world().get_direct_space_state()
@@ -209,6 +217,8 @@ func _check_actions(actions=[]):
 func set_privot(value):
 	privot = value
 	_update_process_func()
+	if len(trigger_action)!=0:
+		_update_views(0)
 
 func set_collisions(value):
 	collisions = value
