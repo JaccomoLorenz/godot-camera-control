@@ -62,7 +62,7 @@ If you don't need the demo just ignore the demo folder and connect your camera w
 
 #### Input Actions / Controls
 
-- String trigger_action: Action name to enable freelook and/or movement. If this action is specified, freelook and movement flag is masked with the action state. Default action is "camera_control".
+- String trigger_action: Action name to enable freelook and/or movement. If this action is specified, freelook and movement flag is masked with the action state. Default action is "".
 
 ##### Freelook
 - String rotate_left_action - Input Action for Left rotation. Default action is "".

@@ -42,7 +42,7 @@ export var left_action = "ui_left"
 export var right_action = "ui_right"
 export var up_action = "ui_page_up"
 export var down_action = "ui_page_down"
-export var trigger_action = "camera_control"
+export var trigger_action = ""
 
 # Gui settings
 export var use_gui = true
