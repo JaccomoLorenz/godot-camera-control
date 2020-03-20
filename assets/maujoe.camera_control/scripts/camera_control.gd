@@ -42,6 +42,7 @@ export var left_action = "ui_left"
 export var right_action = "ui_right"
 export var up_action = "ui_page_up"
 export var down_action = "ui_page_down"
+export var trigger_action = ""
 
 # Gui settings
 export var use_gui = true
@@ -58,6 +59,8 @@ var _total_pitch = 0.0
 var _direction = Vector3(0.0, 0.0, 0.0)
 var _speed = Vector3(0.0, 0.0, 0.0)
 var _gui
+
+var _triggered=false
 
 const ROTATION_MULTIPLIER = 500
 
@@ -89,19 +92,30 @@ func _ready():
 		add_child(_gui)
 
 func _input(event):
-		if freelook:
+		if len(trigger_action)!=0:
+			if event.is_action_pressed(trigger_action):
+				_triggered=true
+			elif event.is_action_released(trigger_action):
+				_triggered=false
+		else:
+			_triggered=true
+		if freelook and _triggered:
 			if event is InputEventMouseMotion:
 				_mouse_offset = event.relative
 				
 			_rotation_offset.x = Input.get_action_strength(rotate_right_action) - Input.get_action_strength(rotate_left_action)
 			_rotation_offset.y = Input.get_action_strength(rotate_down_action) - Input.get_action_strength(rotate_up_action)
 	
-		if movement:
+		if movement and _triggered:
 			_direction.x = Input.get_action_strength(right_action) - Input.get_action_strength(left_action)
 			_direction.y = Input.get_action_strength(up_action) - Input.get_action_strength(down_action)
 			_direction.z = Input.get_action_strength(backward_action) - Input.get_action_strength(forward_action)
 
 func _process(delta):
+	if _triggered:
+		_update_views(delta)
+
+func _update_views(delta):
 	if privot:
 		_update_distance()
 	if freelook:
@@ -110,6 +124,10 @@ func _process(delta):
 		_update_movement(delta)
 
 func _physics_process(delta):
+	if _triggered:
+		_update_views_physics(delta)
+
+func _update_views_physics(delta):
 	# Called when collision are enabled
 	_update_distance()
 	if freelook:
@@ -199,6 +217,8 @@ func _check_actions(actions=[]):
 func set_privot(value):
 	privot = value
 	_update_process_func()
+	if len(trigger_action)!=0:
+		_update_views(0)
 
 func set_collisions(value):
 	collisions = value

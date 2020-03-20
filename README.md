@@ -61,6 +61,9 @@ If you don't need the demo just ignore the demo folder and connect your camera w
 - Vector3 max_speed - Set maximum movement speed for each axes separately. Default value is (1.0, 1.0, 1.0).
 
 #### Input Actions / Controls
+
+- String trigger_action: Action name to enable freelook and/or movement. If this action is specified, freelook and movement flag is masked with the action state. Default action is "".
+
 ##### Freelook
 - String rotate_left_action - Input Action for Left rotation. Default action is "".
 - String rotate_right_action: Input Action for Right rotation. Default action is "".
