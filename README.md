@@ -27,6 +27,27 @@ There is a demo scene in the demo folder where you can test all features and pla
 
 If you don't need the demo just ignore the demo folder and connect your camera with the "camera_control.gd" script that can be found in the script folder.
 
+### Add events to InputMap actions
+
+Here is an example to add WASD movements programatically, assuming the camera node name is `Camera`:
+
+```gdscript
+func setup_camera():
+	var actions_with_key := {
+		$Camera.forward_action: Config.key_move_forward,
+		$Camera.backward_action: Config.key_move_backward,
+		$Camera.left_action: Config.key_move_left,
+		$Camera.right_action: Config.key_move_right,
+	}
+	for action in actions_with_key:
+		var scancode := OS.find_scancode_from_string(actions_with_key[action])
+		var input_event := InputEventKey.new()
+		input_event.scancode = scancode
+		InputMap.action_add_event(action, input_event)
+```
+
+This logic can be used to load key bindings from a configuration file.
+
 ## Docummentation:
 
 ### Settings available via Editor/GDscript:
@@ -61,9 +82,6 @@ If you don't need the demo just ignore the demo folder and connect your camera w
 - Vector3 max_speed - Set maximum movement speed for each axes separately. Default value is (1.0, 1.0, 1.0).
 
 #### Input Actions / Controls
-
-- String trigger_action: Action name to enable freelook and/or movement. If this action is specified, freelook and movement flag is masked with the action state. Default action is "".
-
 ##### Freelook
 - String rotate_left_action - Input Action for Left rotation. Default action is "".
 - String rotate_right_action: Input Action for Right rotation. Default action is "".
