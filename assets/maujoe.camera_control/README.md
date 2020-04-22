@@ -54,11 +54,11 @@ This logic can be used to load key bindings from a configuration file.
 
 #### General
 - bool `enable` : enable/disable camera controls. Default is true.
-- int `mouse_mode`: Same as Godot's mouse settings by default the mouse is captured:
-  - `Visible` = 0 (MOUSE_MODE_VISIBLE),
-  - `Hidden` = 1 (MOUSE_MODE_HIDDEN),
-  - `Capture` = 2 (MOUSE_MODE_CAPTURED),
-  - `Confined` = 3 (MOUSE_MODE_CONFINED).
+- int `mouse_mode`: Same as [Godot's mouse settings](https://docs.godotengine.org/en/latest/classes/class_input.html?highlight=Input#enumerations). By default, the mouse is captured:
+  - `Visible` = 0 (Input.MOUSE_MODE_VISIBLE),
+  - `Hidden` = 1 (Input.MOUSE_MODE_HIDDEN),
+  - `Captured` = 2 (Input.MOUSE_MODE_CAPTURED),
+  - `Confined` = 3 (Input.MOUSE_MODE_CONFINED).
 
 #### Freelook
 - bool `freelook` - Enable/disable freelook. Default is true.
