@@ -6,7 +6,9 @@ extends Spatial
 # User settings:
 # General settings
 export var enabled = true setget set_enabled
-export(int, "Visible", "Hidden", "Caputered, Confined") var mouse_mode = 2
+
+# See https://docs.godotengine.org/en/latest/classes/class_input.html?highlight=Input#enumerations
+export(int, "Visible", "Hidden", "Captured, Confined") var mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 enum Freelook_Modes {MOUSE, INPUT_ACTION, MOUSE_AND_INPUT_ACTION}
 
