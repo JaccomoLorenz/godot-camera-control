@@ -33,17 +33,15 @@ Here is an example to add WASD movements programatically, assuming the camera no
 
 ```gdscript
 func setup_camera():
-	var actions_with_key := {
-		$Camera.forward_action: Config.key_move_forward,
-		$Camera.backward_action: Config.key_move_backward,
-		$Camera.left_action: Config.key_move_left,
-		$Camera.right_action: Config.key_move_right,
-	}
-	for action in actions_with_key:
-		var scancode := OS.find_scancode_from_string(actions_with_key[action])
-		var input_event := InputEventKey.new()
-		input_event.scancode = scancode
-		InputMap.action_add_event(action, input_event)
+	set_action($Camera.forward_action, Config.key_move_forward)
+	set_action($Camera.backward_action, Config.key_move_backward)
+	...
+	return
+
+func set_action(action: String, config_key: String):
+	var input_event := InputEventKey.new()
+	input_event.scancode = OS.find_scancode_from_string(config_key)
+	InputMap.action_add_event(action, input_event)
 ```
 
 This logic can be used to load key bindings from a configuration file.
