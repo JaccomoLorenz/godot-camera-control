@@ -24,6 +24,8 @@ var panel
 var mouse_over = false
 var mouse_pressed = false
 
+#warning-ignore:SHADOWED_VARIABLE
+#warning-ignore:SHADOWED_VARIABLE
 func _init(camera, shortcut):
 	self.camera = camera
 	self.shortcut = shortcut
@@ -124,6 +126,14 @@ func _ready():
 		collisions.set_pressed(camera.collisions)
 		collisions.connect("toggled",self,"_on_btn_collisions_toggled")
 
+		var lbl_collision_buffer = Label.new()
+		lbl_collision_buffer.set_text("Collision Buffer")
+
+		var collision_buffer = HScrollBar.new()
+		collision_buffer.set_max(max(camera.distance - camera.zoom_min, 0.0))
+		collision_buffer.set_value(camera.collision_buffer)
+		collision_buffer.connect("value_changed", self, "_in_hsb_collision_buffer_value_changed")
+
 		# Movement
 		var lbl_movement = Label.new()
 		lbl_movement.set_text("Movement")
@@ -156,6 +166,25 @@ func _ready():
 		deceleration.set_value(camera.deceleration)
 		deceleration.connect("value_changed", self, "_in_hsb_deceleration_value_changed")
 
+		var lbl_zoom_min = Label.new()
+		var lbl_zoom_percent = Label.new()
+		var lbl_zoom_step = Label.new()
+		lbl_zoom_min.set_text("Minimum Zoom %")
+		lbl_zoom_percent.set_text("Current Zoom %")
+		lbl_zoom_step.set_text("Zoom Step Amount")
+
+		var zoom_min = HScrollBar.new()
+		zoom_min.set_max(1.0)
+		zoom_min.set_value(camera.zoom_min)
+		zoom_min.connect("value_changed", self, "_in_hsb_zoom_min_value_changed")
+		var zoom_percent = HScrollBar.new()
+		zoom_percent.set_max(1.0)
+		zoom_percent.set_value(camera.zoom_percent)
+		zoom_percent.connect("value_changed", self, "_in_hsb_zoom_percent_value_changed")
+		var zoom_step = SpinBox.new()
+		zoom_step.set_value(camera.zoom_step)
+		zoom_step.connect("value_changed",self,"_on_box_zoom_step_value_changed")
+
 		add_child(panel)
 		panel.add_child(container)
 		container.add_child(lbl_mouse)
@@ -175,6 +204,8 @@ func _ready():
 		container.add_child(lbl_pitch)
 		container.add_child(pitch)
 		container.add_child(collisions)
+		container.add_child(lbl_collision_buffer)
+		container.add_child(collision_buffer)
 		container.add_child(lbl_movement)
 		container.add_child(movement)
 		container.add_child(lbl_speed)
@@ -183,6 +214,12 @@ func _ready():
 		container.add_child(acceleration)
 		container.add_child(lbl_deceleration)
 		container.add_child(deceleration)
+		container.add_child(lbl_zoom_min)
+		container.add_child(zoom_min)
+		container.add_child(lbl_zoom_percent)
+		container.add_child(zoom_percent)
+		container.add_child(lbl_zoom_step)
+		container.add_child(zoom_step)
 		
 		if DRAGGABLE:
 			panel.connect("mouse_entered", self, "_panel_entered")
@@ -211,6 +248,7 @@ func _input(event):
 		elif event is InputEventMouseMotion and mouse_over and mouse_pressed:
 			panel.set_begin(panel.get_begin() + event.relative)
 
+#warning-ignore:SHADOWED_VARIABLE
 func _update_privots(privot):
 	privot.clear()
 	privot.add_item("None")
@@ -281,6 +319,9 @@ func _on_box_pitch_value_changed(value):
 func _on_btn_collisions_toggled(pressed):
 	camera.collisions = pressed
 
+func _in_hsb_collision_buffer_value_changed(value):
+	camera.collision_buffer = value
+
 func _on_btn_movement_toggled(pressed):
 	camera.movement = pressed
 
@@ -294,3 +335,10 @@ func _in_hsb_acceleration_value_changed(value):
 	
 func _in_hsb_deceleration_value_changed(value):
 	camera.deceleration = value
+
+func _in_hsb_zoom_min_value_changed(value):
+	camera.zoom_min = value
+func _in_hsb_zoom_percent_value_changed(value):
+	camera.zoom_percent = value
+func _on_box_zoom_step_value_changed(value):
+	camera.zoom_step = value
