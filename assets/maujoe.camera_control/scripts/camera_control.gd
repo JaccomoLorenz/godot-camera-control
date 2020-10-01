@@ -25,6 +25,7 @@ export(NodePath) var privot setget set_privot
 export var distance = 5.0 setget set_distance
 export var rotate_privot = false
 export var collisions = true setget set_collisions
+export(float) var collision_buffer = 0.05 #Offsets the camera closer to privot to prevent clipping of camera through geometry at odd angles
 
 # Movement settings
 export var movement = true
@@ -45,6 +46,14 @@ export var right_action = "ui_right"
 export var up_action = "ui_page_up"
 export var down_action = "ui_page_down"
 export var trigger_action = ""
+export var zoom_in_action = ""
+export var zoom_out_action = ""
+
+#Zoom settings
+export(float, 0.0, 1.0) var zoom_min = 0.25 setget set_zoom_min #Percentage of total distance to be used as minimum distance to maintain
+export(float, 0.0, 1.0) var zoom_percent = 0.0 setget set_zoom #Percentage value of Current Zoom Level (1.0 is completely zoomed in)
+#Note: This can be smaller than zoom_min its the percent of the available range of distance.
+export(float, 0.0, 1.0) var zoom_step = 0.01 setget set_zoom_step #On each event how much to change zoom in or out(Can also disable zoom having this at 0.0)
 
 # Gui settings
 export var use_gui = true
@@ -78,7 +87,9 @@ func _ready():
 		rotate_left_action,
 		rotate_right_action,
 		rotate_up_action,
-		rotate_down_action
+		rotate_down_action,
+		zoom_in_action,
+		zoom_out_action
 	])
 
 	if privot:
@@ -104,14 +115,21 @@ func _input(event):
 		if freelook and _triggered:
 			if event is InputEventMouseMotion:
 				_mouse_offset = event.relative
-				
+			
 			_rotation_offset.x = Input.get_action_strength(rotate_right_action) - Input.get_action_strength(rotate_left_action)
 			_rotation_offset.y = Input.get_action_strength(rotate_down_action) - Input.get_action_strength(rotate_up_action)
-	
 		if movement and _triggered:
 			_direction.x = Input.get_action_strength(right_action) - Input.get_action_strength(left_action)
 			_direction.y = Input.get_action_strength(up_action) - Input.get_action_strength(down_action)
 			_direction.z = Input.get_action_strength(backward_action) - Input.get_action_strength(forward_action)
+		if zoom_step > 0.0:
+			if event.is_action_pressed(zoom_in_action):
+				#_zoomDir = 1#TODO allow for zoom smoothing over time(?)
+				zoom_percent += zoom_step
+			elif event.is_action_pressed(zoom_out_action):
+				#_zoomDir = -1#TODO allow for zoom smoothing over time(?)
+				zoom_percent -= zoom_step
+			set_zoom(zoom_percent)#Apply/update zoom limit
 
 func _process(delta):
 	if _triggered:
@@ -138,15 +156,15 @@ func _update_views_physics(delta):
 	var space_state = get_world().get_direct_space_state()
 	var obstacle = space_state.intersect_ray(privot.get_translation(),  get_translation())
 	if not obstacle.empty():
-		set_translation(obstacle.position)
+		set_translation(obstacle.position.move_toward(translation, -collision_buffer))
 
 func _update_movement(delta):
 	var offset = max_speed * acceleration * _direction
-
+	
 	_speed.x = clamp(_speed.x + offset.x, -max_speed.x, max_speed.x)
 	_speed.y = clamp(_speed.y + offset.y, -max_speed.y, max_speed.y)
 	_speed.z = clamp(_speed.z + offset.z, -max_speed.z, max_speed.z)
-
+	
 	# Apply deceleration if no input
 	if _direction.x == 0:
 		_speed.x *= (1.0 - deceleration)
@@ -154,7 +172,7 @@ func _update_movement(delta):
 		_speed.y *= (1.0 - deceleration)
 	if _direction.z == 0:
 		_speed.z *= (1.0 - deceleration)
-
+	
 	if local:
 		translate(_speed * delta)
 	else:
@@ -169,36 +187,43 @@ func _update_rotation(delta):
 		offset += _rotation_offset * sensitivity * ROTATION_MULTIPLIER * delta
 	
 	_mouse_offset = Vector2()
-
+	
 	_yaw = _yaw * smoothness + offset.x * (1.0 - smoothness)
 	_pitch = _pitch * smoothness + offset.y * (1.0 - smoothness)
-
+	
 	if yaw_limit < 360:
 		_yaw = clamp(_yaw, -yaw_limit - _total_yaw, yaw_limit - _total_yaw)
 	if pitch_limit < 360:
 		_pitch = clamp(_pitch, -pitch_limit - _total_pitch, pitch_limit - _total_pitch)
-
+	
 	_total_yaw += _yaw
 	_total_pitch += _pitch
-
+	
 	if privot:
 		var target = privot.get_translation()
 		var dist = get_translation().distance_to(target)
-
+	
 		set_translation(target)
 		rotate_y(deg2rad(-_yaw))
 		rotate_object_local(Vector3(1,0,0), deg2rad(-_pitch))
 		translate(Vector3(0.0, 0.0, dist))
-
+	
 		if rotate_privot:
 			privot.rotate_y(deg2rad(-_yaw))
 	else:
 		rotate_y(deg2rad(-_yaw))
 		rotate_object_local(Vector3(1,0,0), deg2rad(-_pitch))
 
+func _calculated_zoomed_distance() -> float:
+	#Uses distance for distMax
+	var distMin = (distance * zoom_min)
+	var delta = (distance - distMin)
+	#Removing the '1.0 -' below will invert zoom value where 0.0 is fully zoomed in.
+	return distMin + ((1.0 - zoom_percent) * delta)
+
 func _update_distance():
 	var t = privot.get_translation()
-	t.z -= distance
+	t.z -= _calculated_zoomed_distance()
 	set_translation(t)
 
 func _update_process_func():
@@ -242,3 +267,10 @@ func set_smoothness(value):
 
 func set_distance(value):
 	distance = max(0, value)
+
+func set_zoom_min(value):
+	zoom_min = clamp(value, 0.0, 1.0)
+func set_zoom(value):
+	zoom_percent = clamp(value, 0.0, 1.0)
+func set_zoom_step(value):
+	zoom_step = clamp(value, 0.0, 1.0)
