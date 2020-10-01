@@ -46,7 +46,7 @@ func set_action(action: String, config_key: String):
 
 This logic can be used to load key bindings from a configuration file.
 
-## Docummentation:
+## Documentation:
 
 ### Settings available via Editor/GDscript:
 
