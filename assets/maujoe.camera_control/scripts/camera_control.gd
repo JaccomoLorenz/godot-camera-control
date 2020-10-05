@@ -122,13 +122,14 @@ func _input(event):
 			_direction.x = Input.get_action_strength(right_action) - Input.get_action_strength(left_action)
 			_direction.y = Input.get_action_strength(up_action) - Input.get_action_strength(down_action)
 			_direction.z = Input.get_action_strength(backward_action) - Input.get_action_strength(forward_action)
-		if zoom_step > 0.0:
-			if event.is_action_pressed(zoom_in_action):
-				#_zoomDir = 1#TODO allow for zoom smoothing over time(?)
-				zoom_percent += zoom_step
-			elif event.is_action_pressed(zoom_out_action):
-				#_zoomDir = -1#TODO allow for zoom smoothing over time(?)
-				zoom_percent -= zoom_step
+		if zoom_step > 0.0 and _triggered:
+			if len(zoom_in_action)!=0 and len(zoom_out_action)!=0:
+				if event.is_action_pressed(zoom_in_action):
+					#_zoomDir = 1#TODO allow for zoom smoothing over time(?)
+					zoom_percent += zoom_step
+				elif event.is_action_pressed(zoom_out_action):
+					#_zoomDir = -1#TODO allow for zoom smoothing over time(?)
+					zoom_percent -= zoom_step
 			set_zoom(zoom_percent)#Apply/update zoom limit
 
 func _process(delta):
