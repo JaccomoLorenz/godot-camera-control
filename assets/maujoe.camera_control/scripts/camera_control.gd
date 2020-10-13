@@ -148,6 +148,20 @@ func _physics_process(delta):
 	if _triggered:
 		_update_views_physics(delta)
 
+func _force_update( delta ) -> void:
+	#Set Trigger as modes require this boolean as true to run. and we want them to run regardless of trigger when forced.
+	#We backup the current value of the boolean.
+	var tmp = _triggered
+	_triggered = true
+	#Depending on mode of operation call respective function
+	if collisions and privot:
+		_physics_process( delta )
+	else:
+		_process( delta )
+	#Restore the previous value of _triggered
+	#This should be safe as the called functions don't modify the triggered boolean value.
+	_triggered = tmp
+
 func _update_views_physics(delta):
 	# Called when collision are enabled
 	_update_distance()
@@ -258,6 +272,10 @@ func set_enabled(value):
 		Input.set_mouse_mode(mouse_mode)
 		set_process_input(true)
 		_update_process_func()
+		#When scene starts with the camera not initially in the correct position and awaiting input with a privot defined,
+		#Until that first input event is reveived, camera would remain in the wrong initial location
+		#unless we force an initial update here. So we don't have to wait for the first input event(s) to define the _triggered bool.
+		_force_update( 0 )
 	else:
 		set_process(false)
 		set_process_input(false)
