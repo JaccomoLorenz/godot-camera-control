@@ -46,7 +46,7 @@ func set_action(action: String, config_key: String):
 
 This logic can be used to load key bindings from a configuration file.
 
-## Docummentation:
+## Documentation:
 
 ### Settings available via Editor/GDscript:
 
@@ -71,6 +71,7 @@ This logic can be used to load key bindings from a configuration file.
 - float `distance` - The distance between the camera and the privot object. Minimum value is 0. Default value is 5.0
 - bool `rotate_privot` - Rotate privot object with the mouselook. Default is false.
 - bool `collision` - The camera avoid it to go through/behind objects. Default is true.
+- float 'collision_buffer' - When colliding with objects offsets camera towards privot to prevent visual clipping.
 
 #### Movement
 - bool `movement` - Enable/disable camera movement (flying). Default is true.
@@ -93,6 +94,13 @@ This logic can be used to load key bindings from a configuration file.
 - String `right_action` - Input Action for Right movement. Default action is "ui_right".
 - String `up_action` - Input Action for upward movement. Default action is "ui_page_up".
 - String `down_action` - Input Action for downward movement. Default action is "ui_page_down".
+- String 'zoom_in_action' - Input Action for the zoom in movement. Default action is "".
+- String 'zoom_out_action' - Input Action for the zoom out movement. Default action is "".
+
+##### Zoom
+- float 'zoom_min' - Minimum percentage of 'distance' to keep the camera away from the privot. Default is 25%
+- float 'zoom_percent' - Percentage of current camera zoom between 'zoom_min' and 'distance'. Default is 0%
+- float 'zoom_step' - Percentage to increase or decrease zoom levels on an input event. Default is 1%
 
 #### Ingame Gui
 - String `gui_action` - Input Action to show/hide the ingame control gui. Default action is "ui_cancel".
