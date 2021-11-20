@@ -1,54 +1,59 @@
 # Licensed under the MIT License.
 # Copyright (c) 2018-2020 Jaccomo Lorenz (Maujoe)
 
-extends Spatial
+extends Node3D
 
 # User settings:
 # General settings
-export var enabled = true setget set_enabled
+@export var enabled = true:
+	set(value): set_enabled(value)
 
 # See https://docs.godotengine.org/en/latest/classes/class_input.html?highlight=Input#enumerations
-export(int, "Visible", "Hidden", "Captured, Confined") var mouse_mode = Input.MOUSE_MODE_CAPTURED
+@export_enum("Visible", "Hidden", "Captured, Confined") var mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 enum Freelook_Modes {MOUSE, INPUT_ACTION, MOUSE_AND_INPUT_ACTION}
 
 # Freelook settings
-export var freelook = true
-export (Freelook_Modes) var freelook_mode = 2
-export (float, 0.0, 1.0) var sensitivity = 0.5
-export (float, 0.0, 0.999, 0.001) var smoothness = 0.5 setget set_smoothness
-export (int, 0, 360) var yaw_limit = 360
-export (int, 0, 360) var pitch_limit = 360
+@export var freelook = true
+@export var freelook_mode : Freelook_Modes = 2
+@export_range(0.0, 1.0) var sensitivity : float = 0.5
+@export_range(0.0, 0.999, 0.001) var smoothness : float = 0.5
+
+@export_range(0, 360) var yaw_limit = 360
+@export_range(0, 360) var pitch_limit = 360
 
 # Pivot Settings
-export(NodePath) var privot setget set_privot
-export var distance = 5.0 setget set_distance
-export var rotate_privot = false
-export var collisions = true setget set_collisions
+var pivot : Node3D
+@export var pivot_object : NodePath:
+	set(node_path): set_pivot(node_path)
+@export_range(0.0, 1000) var distance = 5.0
+@export var rotate_pivot = false
+@export var collisions = true:
+	set(value): set_collisions(value)
 
 # Movement settings
-export var movement = true
-export (float, 0.0, 1.0) var acceleration = 1.0
-export (float, 0.0, 0.0, 1.0) var deceleration = 0.1
-export var max_speed = Vector3(1.0, 1.0, 1.0)
-export var local = true
+@export var movement = true
+@export_range(0.0, 1.0) var acceleration = 1.0
+@export_range(0.0, 0.0, 1.0) var deceleration = 0.1
+@export var max_speed = Vector3(1.0, 1.0, 1.0)
+@export var local = true
 
 # Input Actions
-export var rotate_left_action = ""
-export var rotate_right_action = ""
-export var rotate_up_action = ""
-export var rotate_down_action = ""
-export var forward_action = "ui_up"
-export var backward_action = "ui_down"
-export var left_action = "ui_left"
-export var right_action = "ui_right"
-export var up_action = "ui_page_up"
-export var down_action = "ui_page_down"
-export var trigger_action = ""
+@export var rotate_left_action = ""
+@export var rotate_right_action = ""
+@export var rotate_up_action = ""
+@export var rotate_down_action = ""
+@export var forward_action = "ui_up"
+@export var backward_action = "ui_down"
+@export var left_action = "ui_left"
+@export var right_action = "ui_right"
+@export var up_action = "ui_page_up"
+@export var down_action = "ui_page_down"
+@export var trigger_action = ""
 
 # Gui settings
-export var use_gui = true
-export var gui_action = "ui_cancel"
+@export var use_gui = false
+@export var gui_action = "ui_cancel"
 
 # Intern variables.
 var _mouse_offset = Vector2()
@@ -81,32 +86,33 @@ func _ready():
 		rotate_down_action
 	])
 
-	if privot:
-		privot = get_node(privot)
+	if pivot_object:
+		pivot = get_node(pivot_object)
 	else:
-		privot = null
+		pivot = null
 
 	set_enabled(enabled)
 
 	if use_gui:
-		_gui = preload("camera_control_gui.gd")
+		_gui = preload("res://camera/gui.gd")
 		_gui = _gui.new(self, gui_action)
 		add_child(_gui)
 
 func _input(event):
-		if len(trigger_action)!=0:
+		if len(trigger_action) != 0:
 			if event.is_action_pressed(trigger_action):
-				_triggered=true
+				_triggered = true
 			elif event.is_action_released(trigger_action):
-				_triggered=false
+				_triggered = false
 		else:
-			_triggered=true
+			_triggered = true
+			
 		if freelook and _triggered:
 			if event is InputEventMouseMotion:
 				_mouse_offset = event.relative
 				
-			_rotation_offset.x = Input.get_action_strength(rotate_right_action) - Input.get_action_strength(rotate_left_action)
-			_rotation_offset.y = Input.get_action_strength(rotate_down_action) - Input.get_action_strength(rotate_up_action)
+		#	_rotation_offset.x = Input.get_action_strength(rotate_right_action) - Input.get_action_strength(rotate_left_action)
+		#	_rotation_offset.y = Input.get_action_strength(rotate_down_action) - Input.get_action_strength(rotate_up_action)
 	
 		if movement and _triggered:
 			_direction.x = Input.get_action_strength(right_action) - Input.get_action_strength(left_action)
@@ -118,7 +124,7 @@ func _process(delta):
 		_update_views(delta)
 
 func _update_views(delta):
-	if privot:
+	if pivot:
 		_update_distance()
 	if freelook:
 		_update_rotation(delta)
@@ -135,10 +141,13 @@ func _update_views_physics(delta):
 	if freelook:
 		_update_rotation(delta)
 
-	var space_state = get_world().get_direct_space_state()
-	var obstacle = space_state.intersect_ray(privot.get_translation(),  get_translation())
+	var space_state = get_world_3d().get_direct_space_state()
+	var params : PhysicsRayQueryParameters3D
+	params.from = pivot.position
+	params.to = self.position
+	var obstacle = space_state.intersect_ray(params)
 	if not obstacle.empty():
-		set_translation(obstacle.position)
+		self.position = obstacle.position
 
 func _update_movement(delta):
 	var offset = max_speed * acceleration * _direction
@@ -181,29 +190,29 @@ func _update_rotation(delta):
 	_total_yaw += _yaw
 	_total_pitch += _pitch
 
-	if privot:
-		var target = privot.get_translation()
-		var dist = get_translation().distance_to(target)
+	if pivot:
+		var target = pivot.position
+		var dist = position.distance_to(target)
 
-		set_translation(target)
+		position = target
 		rotate_y(deg2rad(-_yaw))
 		rotate_object_local(Vector3(1,0,0), deg2rad(-_pitch))
 		translate(Vector3(0.0, 0.0, dist))
 
-		if rotate_privot:
-			privot.rotate_y(deg2rad(-_yaw))
+		if rotate_pivot:
+			pivot.rotate_y(deg2rad(-_yaw))
 	else:
 		rotate_y(deg2rad(-_yaw))
 		rotate_object_local(Vector3(1,0,0), deg2rad(-_pitch))
 
 func _update_distance():
-	var t = privot.get_translation()
+	var t = pivot.position
 	t.z -= distance
-	set_translation(t)
+	position = t
 
 func _update_process_func():
 	# Use physics process if collision are enabled
-	if collisions and privot:
+	if collisions and pivot:
 		set_physics_process(true)
 		set_process(false)
 	else:
@@ -216,18 +225,16 @@ func _check_actions(actions=[]):
 			if not InputMap.has_action(action):
 				print('WARNING: No action "' + action + '"')
 
-func set_privot(value):
-	privot = value
+func set_pivot(node_path):
+	pivot = get_node(node_path)
 	_update_process_func()
-	if len(trigger_action)!=0:
+	if len(trigger_action) != 0:
 		_update_views(0)
 
 func set_collisions(value):
-	collisions = value
 	_update_process_func()
 
 func set_enabled(value):
-	enabled = value
 	if enabled:
 		Input.set_mouse_mode(mouse_mode)
 		set_process_input(true)
@@ -236,9 +243,3 @@ func set_enabled(value):
 		set_process(false)
 		set_process_input(false)
 		set_physics_process(false)
-
-func set_smoothness(value):
-	smoothness = clamp(value, 0.001, 0.999)
-
-func set_distance(value):
-	distance = max(0, value)

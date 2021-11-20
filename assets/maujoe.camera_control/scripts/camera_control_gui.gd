@@ -18,7 +18,7 @@ const MAX_SPEED = 50
 var camera
 var shortcut
 var node_list
-var privot
+var pivot
 var panel
 
 var mouse_over = false
@@ -54,14 +54,14 @@ func _ready():
 		mouse.add_item("Captured")
 		mouse.add_item("Confined")
 		mouse.select(camera.mouse_mode)
-		mouse.connect("item_selected",self,"_on_opt_mouse_item_selected")
+		mouse.item_selected.connect(_on_opt_mouse_item_selected)
 
 		# Freelook
 		var freelook = CheckButton.new()
 		freelook.set_text("Freelook")
 		freelook.set_toggle_mode(true)
 		freelook.set_pressed(camera.freelook)
-		freelook.connect("toggled",self,"_on_btn_freelook_toggled")
+		freelook.toggled.connect(_on_btn_freelook_toggled)
 
 		var lbl_sensitivity = Label.new()
 		lbl_sensitivity.set_text("Sensitivity")
@@ -69,7 +69,7 @@ func _ready():
 		var sensitivity = HScrollBar.new()
 		sensitivity.set_max(1)
 		sensitivity.set_value(camera.sensitivity)
-		sensitivity.connect("value_changed",self,"_on_hsb_sensitivity_value_changed")
+		sensitivity.value_changed.connect(_on_hsb_sensitivity_value_changed)
 
 		var lbl_smoothless = Label.new()
 		lbl_smoothless.set_text("Smoothness")
@@ -78,29 +78,30 @@ func _ready():
 		smoothness.set_max(0.999)
 		smoothness.set_min(0.5)
 		smoothness.set_value(camera.smoothness)
-		smoothness.connect("value_changed",self,"_on_hsb_smoothness_value_changed")
+		smoothness.value_changed.connect(_on_hsb_smoothness_value_changed)
 
-		var lbl_privot = Label.new()
-		lbl_privot.set_text("Privot")
+		var lbl_pivot = Label.new()
+		lbl_pivot.set_text("Pivot")
 
-		privot = OptionButton.new()
-		privot.set_text("Privot")
-		_update_privots(privot)
-		privot.connect("item_selected",self,"_on_opt_privot_item_selected")
-		privot.connect("pressed",self,"_on_opt_privot_pressed")
+		pivot = OptionButton.new()
+		pivot.set_text("Pivot")
+		_update_pivots(pivot)
+		pivot.item_selected.connect(_on_opt_pivot_item_selected)
+		# gavlig: here i didnt find the same signal but i didnt spend too much time looking
+		#pivot.pressed.connect(_on_opt_pivot_pressed) 
 
-		var btn_rot_privot = CheckButton.new()
-		btn_rot_privot.set_text("Rotate Privot")
-		btn_rot_privot.set_toggle_mode(true)
-		btn_rot_privot.set_pressed(camera.rotate_privot)
-		btn_rot_privot.connect("toggled",self,"_on_btn_rot_privot_toggled")
+		var btn_rot_pivot = CheckButton.new()
+		btn_rot_pivot.set_text("Rotate Pivot")
+		btn_rot_pivot.set_toggle_mode(true)
+		btn_rot_pivot.set_pressed(camera.rotate_pivot)
+		btn_rot_pivot.toggled.connect(_on_btn_rot_pivot_toggled)
 
 		var lbl_distance = Label.new()
 		lbl_distance.set_text("Distance")
 
 		var distance = SpinBox.new()
 		distance.set_value(camera.distance)
-		distance.connect("value_changed",self,"_on_box_distance_value_changed")
+		distance.value_changed.connect(_on_box_distance_value_changed)
 
 		var lbl_yaw = Label.new()
 		lbl_yaw.set_text("Yaw Limit")
@@ -108,7 +109,7 @@ func _ready():
 		var yaw = SpinBox.new()
 		yaw.set_max(360)
 		yaw.set_value(camera.yaw_limit)
-		yaw.connect("value_changed",self,"_on_box_yaw_value_changed")
+		yaw.value_changed.connect(_on_box_yaw_value_changed)
 
 		var lbl_pitch = Label.new()
 		lbl_pitch.set_text("Pitch Limit")
@@ -116,13 +117,13 @@ func _ready():
 		var pitch = SpinBox.new()
 		pitch.set_max(360)
 		pitch.set_value(camera.pitch_limit)
-		pitch.connect("value_changed",self,"_on_box_pitch_value_changed")
+		pitch.value_changed.connect(_on_box_pitch_value_changed)
 
 		var collisions = CheckButton.new()
 		collisions.set_text("Collisions")
 		collisions.set_toggle_mode(true)
 		collisions.set_pressed(camera.collisions)
-		collisions.connect("toggled",self,"_on_btn_collisions_toggled")
+		collisions.toggled.connect(_on_btn_collisions_toggled)
 
 		# Movement
 		var lbl_movement = Label.new()
@@ -130,7 +131,7 @@ func _ready():
 
 		var movement = CheckButton.new()
 		movement.set_pressed(camera.movement)
-		movement.connect("toggled",self,"_on_btn_movement_toggled")
+		movement.toggled.connect(_on_btn_movement_toggled)
 
 		var lbl_speed = Label.new()
 		lbl_speed.set_text("Max Speed")
@@ -138,7 +139,7 @@ func _ready():
 		var speed = HScrollBar.new()
 		speed.set_max(MAX_SPEED)
 		speed.set_value(camera.max_speed.x)
-		speed.connect("value_changed",self,"_on_hsb_speed_value_changed")
+		speed.value_changed.connect(_on_hsb_speed_value_changed)
 		
 		var lbl_acceleration = Label.new()
 		lbl_acceleration.set_text("Acceleration")
@@ -146,7 +147,7 @@ func _ready():
 		var acceleration = HScrollBar.new()
 		acceleration.set_max(1.0)
 		acceleration.set_value(camera.acceleration)
-		acceleration.connect("value_changed", self, "_in_hsb_acceleration_value_changed")
+		acceleration.value_changed.connect(_in_hsb_acceleration_value_changed)
 		
 		var lbl_deceleration = Label.new()
 		lbl_deceleration.set_text("Deceleration")
@@ -154,7 +155,7 @@ func _ready():
 		var deceleration = HScrollBar.new()
 		deceleration.set_max(1.0)
 		deceleration.set_value(camera.deceleration)
-		deceleration.connect("value_changed", self, "_in_hsb_deceleration_value_changed")
+		deceleration.value_changed.connect(_in_hsb_deceleration_value_changed)
 
 		add_child(panel)
 		panel.add_child(container)
@@ -165,9 +166,9 @@ func _ready():
 		container.add_child(sensitivity)
 		container.add_child(lbl_smoothless)
 		container.add_child(smoothness)
-		container.add_child(lbl_privot)
-		container.add_child(privot)
-		container.add_child(btn_rot_privot)
+		container.add_child(lbl_pivot)
+		container.add_child(pivot)
+		container.add_child(btn_rot_pivot)
 		container.add_child(lbl_distance)
 		container.add_child(distance)
 		container.add_child(lbl_yaw)
@@ -185,10 +186,10 @@ func _ready():
 		container.add_child(deceleration)
 		
 		if DRAGGABLE:
-			panel.connect("mouse_entered", self, "_panel_entered")
-			panel.connect("mouse_exited", self, "_panel_exited")
-			container.connect("mouse_entered", self, "_panel_entered")
-			container.connect("mouse_exited", self, "_panel_exited")
+			panel.mouse_entered.connect(_panel_entered)
+			panel.mouse_exited.connect(_panel_exited)
+			container.mouse_entered.connect(_panel_entered)
+			container.mouse_exited.connect(_panel_exited)
 		
 		self.hide()
 	else:
@@ -205,36 +206,36 @@ func _input(event):
 			self.hide()
 			
 	if DRAGGABLE:
-		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 			mouse_pressed = event.pressed
 			
 		elif event is InputEventMouseMotion and mouse_over and mouse_pressed:
 			panel.set_begin(panel.get_begin() + event.relative)
 
-func _update_privots(privot):
-	privot.clear()
-	privot.add_item("None")
-	node_list = _get_spatials_recusiv(get_tree().get_root(), [get_name(), camera.get_name()])
+func _update_pivots(pivot):
+	pivot.clear()
+	pivot.add_item("None")
+	node_list = _get_spatials_recusive(get_tree().get_root(), [get_name(), camera.get_name()])
 
 	var size = node_list.size()
 	for i in range(0, size):
 		var node = node_list[i]
-		privot.add_item(node.get_name())
-		if node == camera.privot:
-			privot.select(i+1)
+		pivot.add_item(node.get_name())
+		if node == camera.pivot:
+			pivot.select(i+1)
 
-	if not camera.privot:
-		privot.select(0)
+	if not camera.pivot:
+		pivot.select(0)
 
 
-func _get_spatials_recusiv(node, exceptions=[]):
+func _get_spatials_recusive(node, exceptions=[]):
 	var list = []
 	for child in node.get_children():
 		if not child.get_name() in exceptions:
-			if child is Spatial:
+			if child is Node3D:
 				list.append(child)
-			if not child.get_children().empty():
-				for subchild in _get_spatials_recusiv(child, exceptions):
+			if not child.get_children().is_empty():
+				for subchild in _get_spatials_recusive(child, exceptions):
 					list.append(subchild)
 	return list
 
@@ -256,18 +257,18 @@ func _on_hsb_sensitivity_value_changed(value):
 func _on_hsb_smoothness_value_changed(value):
 	camera.smoothness = value
 
-func _on_opt_privot_pressed():
-	_update_privots(privot)
+func _on_opt_pivot_pressed():
+	_update_pivots(pivot)
 
-func _on_opt_privot_item_selected(id):
+func _on_opt_pivot_item_selected(id):
 	if id > 0:
-		camera.privot = node_list[id-1]
+		camera.pivot = node_list[id-1]
 	else:
-		camera.privot = null
-	privot.select(id)
+		camera.pivot = null
+	pivot.select(id)
 
-func _on_btn_rot_privot_toggled(pressed):
-	camera.rotate_privot = pressed
+func _on_btn_rot_pivot_toggled(pressed):
+	camera.rotate_pivot = pressed
 
 func _on_box_distance_value_changed(value):
 	camera.distance = value
